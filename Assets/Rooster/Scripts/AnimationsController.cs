@@ -22,7 +22,7 @@ public class AnimationsController : MonoBehaviour
     {
         _animator.SetFloat("speed", value);
 
-        if (value == 0)
+        if (value <= 0.1f)
             Idle();
         else
             Move(true);
