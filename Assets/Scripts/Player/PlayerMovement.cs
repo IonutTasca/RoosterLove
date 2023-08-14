@@ -16,6 +16,8 @@ public class PlayerMovement : MonoBehaviour
 
     private Transform _camera;
 
+    private AnimationsController _animationController;
+
     void Start()
     {
         InitializeThings();
@@ -31,11 +33,13 @@ public class PlayerMovement : MonoBehaviour
         _joystick = FindObjectOfType<FloatingJoystick>();
         _rb = GetComponent<Rigidbody>();
         _camera = Camera.main.transform;
+        _animationController = GetComponentInChildren<AnimationsController>();
     }
     private void MoveAndRotatePlayer()
     {
         _movementDirection.Set(_joystick.Horizontal, 0, _joystick.Vertical);
-        
+        Debug.Log("speed: " + _movementDirection.magnitude);
+        _animationController.UpdateSpeed(_movementDirection.magnitude);
         if (_movementDirection.sqrMagnitude >= 0.1f)
         {
             float targetAngle = Mathf.Atan2(_movementDirection.x, _movementDirection.z) * Mathf.Rad2Deg + _camera.eulerAngles.y;
@@ -45,6 +49,9 @@ public class PlayerMovement : MonoBehaviour
 
             _movementDirectionWithRotation = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
             _rb.velocity = _movementDirectionWithRotation * _movementSpeed * Time.fixedDeltaTime;
+            
+            
+            
         }
         else
         {
