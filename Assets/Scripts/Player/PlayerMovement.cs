@@ -13,7 +13,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 _movementDirection;
     private Vector3 _movementDirectionWithRotation;
     private float _turnSmoothVelocity;
-
+    private float _movementMagnitude;
     private Transform _camera;
 
     private AnimationsController _animationController;
@@ -38,9 +38,12 @@ public class PlayerMovement : MonoBehaviour
     private void MoveAndRotatePlayer()
     {
         _movementDirection.Set(_joystick.Horizontal, 0, _joystick.Vertical);
-        Debug.Log("speed: " + _movementDirection.magnitude);
-        _animationController.UpdateSpeed(_movementDirection.magnitude);
-        if (_movementDirection.sqrMagnitude >= 0.1f)
+        _movementMagnitude = _movementDirection.sqrMagnitude;
+
+        Debug.Log("speed: " + _movementMagnitude);
+        _animationController.UpdateSpeed(_movementMagnitude);
+
+        if (_movementMagnitude >= 0.1f)
         {
             float targetAngle = Mathf.Atan2(_movementDirection.x, _movementDirection.z) * Mathf.Rad2Deg + _camera.eulerAngles.y;
             float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref _turnSmoothVelocity, _turnSmoothTime);
@@ -48,10 +51,11 @@ public class PlayerMovement : MonoBehaviour
             transform.rotation = Quaternion.Euler(0f, smoothAngle, 0f);
 
             _movementDirectionWithRotation = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-            _rb.velocity = _movementDirectionWithRotation * _movementSpeed * Time.fixedDeltaTime;
-            
-            
-            
+            if(_movementMagnitude>0.9f)
+                _rb.velocity = _movementDirectionWithRotation * _movementSpeed * Time.fixedDeltaTime;
+            else
+                _rb.velocity = _movementDirectionWithRotation * (_movementSpeed/2f) * Time.fixedDeltaTime;
+
         }
         else
         {
