@@ -6,14 +6,18 @@ using UnityEngine;
 public class AnimationsController : MonoBehaviour
 {
     private Animator _animator;
+    private PlayerStatus _playerStatus;
+
     void Start()
     {
-     _animator = GetComponent<Animator>();   
+        _animator = GetComponentInChildren<Animator>();   
+        _playerStatus = GetComponent<PlayerStatus>();
     }
 
     private void Move(bool value)
     {
         _animator.SetBool("moving", value);
+        _playerStatus.UpdateStatus(Status.Moving);
     }
 
  
@@ -31,10 +35,13 @@ public class AnimationsController : MonoBehaviour
     private void Idle()
     {
         Move(false);
+        _playerStatus.UpdateStatus(Status.Idle);
+
     }
     public void Fly(bool value)
     {
         _animator.SetBool("isFlying", value);
+        _playerStatus.UpdateStatus(Status.Flying);
     }
 
 }
