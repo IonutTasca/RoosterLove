@@ -12,12 +12,19 @@ public class PlayerFly : MonoBehaviour, IPlayerAction
     private AnimationsController _animationsController;
     private Rigidbody _rb;
     private RoosterStats _roosterStats;
+    private Transform _rooster;
+
+    private PlayerStatus _playerStatus;
+
+    private float _resetRotationTimer;
 
     private void Start()
     {
         _animationsController = GetComponent<AnimationsController>();
         _roosterStats = GetComponentInChildren<RoosterStats>();
         _rb = GetComponent<Rigidbody>();
+        _rooster = transform.GetChild(0);
+        _playerStatus = GetComponent<PlayerStatus>(); 
         _button.onClick.AddListener(StartAction);
         _flySlider.onValueChanged.AddListener(OnSliderValueChanged);
     }
@@ -25,8 +32,21 @@ public class PlayerFly : MonoBehaviour, IPlayerAction
     {
         _button.onClick.RemoveAllListeners();
     }
+
+    private void Update()
+    {
+        if (!(_playerStatus.GetStatus() == Status.Flying)) return;
+        _resetRotationTimer += Time.deltaTime;
+        if (_resetRotationTimer > 3)
+        {
+            Reset();
+        }
+    }
+    
+    
     public void StartAction()
     {
+        _rb.AddForce(0, 5, 0, ForceMode.VelocityChange);
         _animationsController.Fly(true);
         ToggleUISelectable(_button, false);
     }
@@ -35,6 +55,7 @@ public class PlayerFly : MonoBehaviour, IPlayerAction
     {
         _animationsController.Fly(false);
         ToggleUISelectable(_button, true);
+        Reset();
     }
 
     public void ToggleUISelectable(Selectable selectableUi, bool value)
@@ -42,13 +63,15 @@ public class PlayerFly : MonoBehaviour, IPlayerAction
         selectableUi.interactable = value;
         _flySlider.gameObject.SetActive(!value);
     }
-
+    private void Reset()
+    {
+        _flySlider.value = 0;
+    }
     private void OnSliderValueChanged(float newValue)
     {
-        //adjust y of player
-        Debug.Log(newValue);
-        transform.localEulerAngles = new Vector3(transform.eulerAngles.x * newValue * _roosterStats.FlyYPower, transform.eulerAngles.y, transform.eulerAngles.z);
-
+        _rb.AddForce(0, newValue/1.5f, 0, ForceMode.VelocityChange);
+        _rooster.localRotation = Quaternion.Euler((newValue * (-_roosterStats.FlyYPower)), 0, 0);
+        _resetRotationTimer = 0f;
     }
     
 

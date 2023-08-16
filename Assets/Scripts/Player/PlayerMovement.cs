@@ -69,12 +69,16 @@ public class PlayerMovement : MonoBehaviour
     private float GetPlayerSpeed()
     {
         if (_playerStatus.GetStatus() == Status.Flying)
-            return _roosterStats.MovementSpeed * 1.5f;
-
+        {
+            if(_movementMagnitude>0.9f)
+                return _roosterStats.FlySpeedFast;
+            else
+                return _roosterStats.FlySpeedSlow;
+        }
         if (_movementMagnitude > 0.9f)
-            return _roosterStats.MovementSpeed;
+            return _roosterStats.RunSpeed;
         else
-            return _roosterStats.MovementSpeed / 2f;
+            return _roosterStats.WalkSpeed;
         
     }
     public float HorizontalInput() => _joystick.Horizontal;
