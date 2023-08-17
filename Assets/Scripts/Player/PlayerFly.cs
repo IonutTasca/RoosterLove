@@ -17,11 +17,10 @@ public class PlayerFly : MonoBehaviour, IPlayerAction
     private PlayerStatus _playerStatus;
 
     private Vector3 _flyYDirection;
+    private float _rotationMappedValue;
 
-    private float _resetRotationTimer;
-    private bool _shouldReset = false;
-
-    private float _lastValue=0f;
+    private float _minRotation = -85;
+    private float _maxRotation = 85;
 
     private void Start()
     {
@@ -44,9 +43,12 @@ public class PlayerFly : MonoBehaviour, IPlayerAction
         if (!(_playerStatus.GetStatus() == Status.Flying)) return;
 
         _flyYDirection.Set(_rb.velocity.x, _flyJoystick.Vertical, _rb.velocity.z);
-        if (_flyYDirection.sqrMagnitude < 0.1f) return;
-        _rb.velocity = _flyYDirection;
-        Debug.Log(_rb.velocity);
+
+        _rotationMappedValue = Mathf.Lerp(_minRotation, _maxRotation, (_flyYDirection.y + 1f) / 2f);
+
+        _rb.velocity = new Vector3(_rb.velocity.x, _flyYDirection.y * _roosterStats.FlyYPower * Time.fixedDeltaTime, _rb.velocity.z);
+
+        _rooster.localRotation = Quaternion.Euler(-_rotationMappedValue, 0, 0);
     }
     
     
@@ -68,14 +70,4 @@ public class PlayerFly : MonoBehaviour, IPlayerAction
         selectableUi.interactable = value;
         _flyJoystick.gameObject.SetActive(!value);
     }
-    
-    private void OnSliderValueChanged(float newValue)
-    {
-       
-        _rb.AddForce(0, newValue/1.5f, 0, ForceMode.VelocityChange);
-        _rooster.localRotation = Quaternion.Euler((newValue * (-_roosterStats.FlyYPower)), 0, 0);
-
-    }
-    
-
 }

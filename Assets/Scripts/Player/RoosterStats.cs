@@ -8,9 +8,9 @@ public class RoosterStats : MonoBehaviour
     [SerializeField] private float _walkSpeed = 70f;
     [SerializeField] private float _flySpeedSlow = 100;
     [SerializeField] private float _flySpeedFast = 200f;
-    [SerializeField] private float _flyYPower = 500f;
+    [SerializeField] private float _flyYPower = 250f;
 
-    private const float _turnSmoothTime = 0.1f;
+    private const float _turnSmoothTime = 0.05f;
 
     public float RunSpeed => _runSpeed;
     public float WalkSpeed => _walkSpeed;
