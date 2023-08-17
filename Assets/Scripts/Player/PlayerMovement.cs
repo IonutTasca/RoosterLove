@@ -26,9 +26,9 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        _movementDirection.Set(_joystick.Horizontal, 0, _joystick.Vertical);
+        _movementDirection.Set(_joystick.Horizontal, _rb.velocity.y, _joystick.Vertical);
         _movementMagnitude = _movementDirection.sqrMagnitude;
-
+        //Debug.Log("movement: " + _movementDirection);
         MoveAndRotatePlayer();
     }
 
@@ -43,19 +43,20 @@ public class PlayerMovement : MonoBehaviour
     }
     private void MoveAndRotatePlayer()
     {
-        _animationController.UpdateSpeed(_movementMagnitude);
+        if (_playerStatus.GetStatus()!=Status.Flying)
+            _animationController.UpdateSpeed(_movementMagnitude);
 
         if (_movementMagnitude >= 0.1f)
         {
             float targetAngle = Mathf.Atan2(_movementDirection.x, _movementDirection.z) * Mathf.Rad2Deg + _camera.eulerAngles.y;
             float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref _turnSmoothVelocity, _turnSmoothTime);
-
+            Debug.Log("target angle: " + targetAngle);
             transform.rotation = Quaternion.Euler(0f, smoothAngle, 0f);
 
             _movementDirectionWithRotation = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-
+            Debug.Log("Movement direction with rotation: " + _movementDirectionWithRotation);
             _rb.velocity = _movementDirectionWithRotation * GetPlayerSpeed() * Time.fixedDeltaTime;
-
+            Debug.Log("Movement velocity: " + _rb.velocity);
         }
         else
         {

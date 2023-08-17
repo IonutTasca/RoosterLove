@@ -41,7 +41,8 @@ public class AnimationsController : MonoBehaviour
     public void Fly(bool value)
     {
         _animator.SetBool("isFlying", value);
-        _playerStatus.UpdateStatus(Status.Flying);
+        if(value)
+            _playerStatus.UpdateStatus(Status.Flying);
     }
 
 }

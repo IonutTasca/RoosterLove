@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class PlayerFly : MonoBehaviour, IPlayerAction
 {
     [SerializeField] private Button _button;
-    [SerializeField] private Slider _flySlider;
+    [SerializeField] private FixedJoystick _flyJoystick;
 
 
     private AnimationsController _animationsController;
@@ -16,7 +16,12 @@ public class PlayerFly : MonoBehaviour, IPlayerAction
 
     private PlayerStatus _playerStatus;
 
+    private Vector3 _flyYDirection;
+
     private float _resetRotationTimer;
+    private bool _shouldReset = false;
+
+    private float _lastValue=0f;
 
     private void Start()
     {
@@ -26,21 +31,22 @@ public class PlayerFly : MonoBehaviour, IPlayerAction
         _rooster = transform.GetChild(0);
         _playerStatus = GetComponent<PlayerStatus>(); 
         _button.onClick.AddListener(StartAction);
-        _flySlider.onValueChanged.AddListener(OnSliderValueChanged);
+        
     }
     private void OnDestroy()
     {
         _button.onClick.RemoveAllListeners();
+        
     }
 
     private void Update()
     {
         if (!(_playerStatus.GetStatus() == Status.Flying)) return;
-        _resetRotationTimer += Time.deltaTime;
-        if (_resetRotationTimer > 3)
-        {
-            Reset();
-        }
+
+        _flyYDirection.Set(_rb.velocity.x, _flyJoystick.Vertical, _rb.velocity.z);
+        if (_flyYDirection.sqrMagnitude < 0.1f) return;
+        _rb.velocity = _flyYDirection;
+        Debug.Log(_rb.velocity);
     }
     
     
@@ -55,23 +61,20 @@ public class PlayerFly : MonoBehaviour, IPlayerAction
     {
         _animationsController.Fly(false);
         ToggleUISelectable(_button, true);
-        Reset();
     }
 
     public void ToggleUISelectable(Selectable selectableUi, bool value)
     {
         selectableUi.interactable = value;
-        _flySlider.gameObject.SetActive(!value);
+        _flyJoystick.gameObject.SetActive(!value);
     }
-    private void Reset()
-    {
-        _flySlider.value = 0;
-    }
+    
     private void OnSliderValueChanged(float newValue)
     {
+       
         _rb.AddForce(0, newValue/1.5f, 0, ForceMode.VelocityChange);
         _rooster.localRotation = Quaternion.Euler((newValue * (-_roosterStats.FlyYPower)), 0, 0);
-        _resetRotationTimer = 0f;
+
     }
     
 
