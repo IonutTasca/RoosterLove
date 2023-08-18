@@ -9,7 +9,7 @@ public class PlayerFly : MonoBehaviour, IPlayerAction
     [SerializeField] private FixedJoystick _flyJoystick;
 
 
-    private AnimationsController _animationsController;
+    private AnimationsRoosterController _animationsController;
     private Rigidbody _rb;
     private RoosterStats _roosterStats;
     private Transform _rooster;
@@ -24,7 +24,7 @@ public class PlayerFly : MonoBehaviour, IPlayerAction
 
     private void Start()
     {
-        _animationsController = GetComponent<AnimationsController>();
+        _animationsController = GetComponent<AnimationsRoosterController>();
         _roosterStats = GetComponentInChildren<RoosterStats>();
         _rb = GetComponent<Rigidbody>();
         _rooster = transform.GetChild(0);

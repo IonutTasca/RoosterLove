@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private float _turnSmoothTime = 0.1f;
-    
     private FloatingJoystick _joystick;
     private Rigidbody _rb;
 
@@ -17,7 +15,7 @@ public class PlayerMovement : MonoBehaviour
 
     private Transform _camera;
 
-    private AnimationsController _animationController;
+    private AnimationsRoosterController _animationController;
     private PlayerStatus _playerStatus;
     private RoosterStats _roosterStats;
     void Start()
@@ -39,7 +37,7 @@ public class PlayerMovement : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
         _playerStatus = GetComponent<PlayerStatus>();
         _camera = Camera.main.transform;
-        _animationController = GetComponentInChildren<AnimationsController>();
+        _animationController = GetComponentInChildren<AnimationsRoosterController>();
         _roosterStats = GetComponentInChildren<RoosterStats>();
     }
     private void MoveAndRotatePlayer()
@@ -51,7 +49,7 @@ public class PlayerMovement : MonoBehaviour
         {
             float targetAngle = Mathf.Atan2(_movementDirection.x, _movementDirection.z) * Mathf.Rad2Deg + _camera.eulerAngles.y;
 
-            float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref _turnSmoothVelocity, _turnSmoothTime);
+            float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref _turnSmoothVelocity, _roosterStats.TurnSmoothTime);
             transform.rotation = Quaternion.Euler(0f, smoothAngle, 0f);
 
             // Calculate the rotated 2D movement direction
