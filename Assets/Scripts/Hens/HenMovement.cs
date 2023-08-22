@@ -16,6 +16,7 @@ public class HenMovement : MonoBehaviour
     private HenStatus _henStatus;
     private Transform _hen;
 
+    private float _speed;
     private void Start()
     {
         _animator = GetComponentInChildren<AnimationsHenController>();
@@ -26,7 +27,8 @@ public class HenMovement : MonoBehaviour
         StartCoroutine(StartMovingAfterDelay());
     }
   
-    private void Update()
+   
+    private void FixedUpdate()
     {
         if (isMoving)
         {
@@ -34,13 +36,16 @@ public class HenMovement : MonoBehaviour
             RotateTowardsTarget();
         }
     }
-
+    private void CalculateSpeed()
+    {
+        _speed = Random.Range(_henStats.WalkSpeed, _henStats.RunSpeed);
+    }
     private void Move()
     {
         
-        Vector3 newPosition = Vector3.MoveTowards(_hen.position, targetPosition, 0.5f * Time.fixedDeltaTime);
+        Vector3 newPosition = Vector3.MoveTowards(_hen.position, targetPosition, _speed * Time.fixedDeltaTime);
         _hen.position = newPosition;
-
+        Debug.Log(_speed);
         
         if (Vector3.Distance(_hen.position, targetPosition) < 0.1f)
         {
@@ -50,10 +55,9 @@ public class HenMovement : MonoBehaviour
             Invoke(nameof(ResumeMoving), idleTime);
         }
         else
-        {
             if(!(_henStatus.GetStatus() == Status.Moving))
-                _animator.UpdateSpeed(0.5f);
-        }
+                _animator.UpdateSpeed(_speed);
+        
             
     }
     private void RotateTowardsTarget()
@@ -99,6 +103,7 @@ public class HenMovement : MonoBehaviour
         if (Vector3.Distance(_hen.position, randomPosition) > _henStats.NpcDistanceWalkingThreshHold)
         {
             targetPosition = randomPosition;
+            CalculateSpeed();
             isMoving = true;
         }
         else

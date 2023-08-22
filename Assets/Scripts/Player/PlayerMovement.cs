@@ -5,10 +5,8 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     private FloatingJoystick _joystick;
-    private Rigidbody _rb;
 
     private Vector3 _movementDirection;
-    private Vector3 _movementDirectionWithRotation;
     private Vector3 _rotated2DMovement;
     private float _turnSmoothVelocity;
     private float _movementMagnitude;
@@ -18,12 +16,13 @@ public class PlayerMovement : MonoBehaviour
     private AnimationsRoosterController _animationController;
     private PlayerStatus _playerStatus;
     private RoosterStats _roosterStats;
+
     void Start()
     {
         InitializeThings();
     }
 
-    void Update()
+    private void FixedUpdate()
     {
         _movementDirection.Set(_joystick.Horizontal, 0, _joystick.Vertical);
         _movementMagnitude = _movementDirection.sqrMagnitude;
@@ -34,7 +33,6 @@ public class PlayerMovement : MonoBehaviour
     private void InitializeThings()
     {
         _joystick = FindObjectOfType<FloatingJoystick>();
-        _rb = GetComponent<Rigidbody>();
         _playerStatus = GetComponent<PlayerStatus>();
         _camera = Camera.main.transform;
         _animationController = GetComponentInChildren<AnimationsRoosterController>();
@@ -55,20 +53,13 @@ public class PlayerMovement : MonoBehaviour
             // Calculate the rotated 2D movement direction
             _rotated2DMovement = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
 
-            // Combine the rotated 2D movement direction with the y component of the current velocity
-            _movementDirectionWithRotation = new Vector3(_rotated2DMovement.x, _rb.velocity.y, _rotated2DMovement.z);
+            // Calculate the movement vector
+            Vector3 movementVector = _rotated2DMovement * GetPlayerSpeed() * Time.fixedDeltaTime;
 
-            // Set the new velocity
-            _rb.velocity = _movementDirectionWithRotation * GetPlayerSpeed() * Time.fixedDeltaTime;
+            // Update the position directly
+            transform.position += movementVector;
         }
-        else
-        {
-            if(_rb.velocity != Vector3.zero)
-            {
-                _rb.velocity = Vector3.zero;
-            }
-                
-        }
+       
     }
     private float GetPlayerSpeed()
     {
