@@ -10,7 +10,6 @@ public class PlayerFly : MonoBehaviour, IPlayerAction
 
 
     private AnimationsRoosterController _animationsController;
-    private Rigidbody _rb;
     private RoosterStats _roosterStats;
     private Transform _rooster;
 
@@ -19,14 +18,13 @@ public class PlayerFly : MonoBehaviour, IPlayerAction
     private Vector3 _flyYDirection;
     private float _rotationMappedValue;
 
-    private float _minRotation = -85;
-    private float _maxRotation = 85;
+    private const float _minRotation = -85;
+    private const float _maxRotation = 85;
 
     private void Start()
     {
         _animationsController = GetComponent<AnimationsRoosterController>();
         _roosterStats = GetComponentInChildren<RoosterStats>();
-        _rb = GetComponent<Rigidbody>();
         _rooster = transform.GetChild(0);
         _playerStatus = GetComponent<PlayerStatus>(); 
         _button.onClick.AddListener(StartAction);
@@ -38,23 +36,37 @@ public class PlayerFly : MonoBehaviour, IPlayerAction
         
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (!(_playerStatus.GetStatus() == Status.Flying)) return;
 
-        _flyYDirection.Set(_rb.velocity.x, _flyJoystick.Vertical, _rb.velocity.z);
+        // Calculate the movement direction based on the joystick input
+        Vector3 movementDirection = new Vector3(_flyJoystick.Horizontal, _flyJoystick.Vertical, 0f);
 
-        _rotationMappedValue = Mathf.Lerp(_minRotation, _maxRotation, (_flyYDirection.y + 1f) / 2f);
+        
+        // Normalize the movement direction to make sure diagonal movement isn't faster
+        if (movementDirection.magnitude > 1f)
+        {
+            movementDirection.Normalize();
+        }
 
-        _rb.velocity = new Vector3(_rb.velocity.x, _flyYDirection.y * _roosterStats.FlyYPower * Time.fixedDeltaTime, _rb.velocity.z);
+        // Calculate the desired position increment based on the movement direction and speed
+        Vector3 positionIncrement = movementDirection * _roosterStats.flyYPower * Time.fixedDeltaTime;
 
-        _rooster.localRotation = Quaternion.Euler(-_rotationMappedValue, 0, 0);
+        // Update the Rooster's position
+        transform.Translate(positionIncrement, Space.World);
+
+        // Calculate the rotation angle based on the vertical joystick input
+        float rotationAngle = Mathf.Lerp(_minRotation, _maxRotation, (_flyJoystick.Vertical + 1f) / 2f);
+
+        // Apply the rotation to the Rooster
+        _rooster.localRotation = Quaternion.Euler(-rotationAngle, 0f, 0f);
     }
     
     
     public void StartAction()
     {
-        _rb.AddForce(0, 5, 0, ForceMode.VelocityChange);
+        //_rb.AddForce(0, 5, 0, ForceMode.VelocityChange);
         _animationsController.Fly(true);
         ToggleUISelectable(_button, false);
     }

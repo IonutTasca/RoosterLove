@@ -38,7 +38,7 @@ public class HenMovement : MonoBehaviour
     }
     private void CalculateSpeed()
     {
-        _speed = Random.Range(_henStats.WalkSpeed, _henStats.RunSpeed);
+        _speed = Random.Range(_henStats.walkSpeed, _henStats.runSpeed);
     }
     private void Move()
     {
@@ -51,7 +51,7 @@ public class HenMovement : MonoBehaviour
         {
             isMoving = false;
             PlayRandomIdleAnimation();
-            float idleTime = Random.Range(_henStats.IdleTimeMin, _henStats.IdleTimeMax);
+            float idleTime = Random.Range(_henStats.idleTimeMin, _henStats.idleTimeMax);
             Invoke(nameof(ResumeMoving), idleTime);
         }
         else
@@ -68,13 +68,13 @@ public class HenMovement : MonoBehaviour
         if (directionToTarget != Vector3.zero)
         {
             targetRotation = Quaternion.LookRotation(directionToTarget.normalized, Vector3.up);
-            _hen.rotation = Quaternion.Slerp(_hen.rotation, targetRotation, Time.deltaTime * _henStats.TurnSmoothTime);
+            _hen.rotation = Quaternion.Slerp(_hen.rotation, targetRotation, Time.deltaTime * _henStats.turnSmoothTime);
         }
     }
     private IEnumerator StartMovingAfterDelay()
     {
         PlayRandomIdleAnimation();
-        yield return new WaitForSeconds(Random.Range(_henStats.IdleTimeMin, _henStats.IdleTimeMax));
+        yield return new WaitForSeconds(Random.Range(_henStats.idleTimeMin, _henStats.idleTimeMax));
 
         isMoving = true;
         SetRandomTargetPosition();
@@ -100,7 +100,7 @@ public class HenMovement : MonoBehaviour
         );
 
         // Check if the distance is greater than the minimum distance
-        if (Vector3.Distance(_hen.position, randomPosition) > _henStats.NpcDistanceWalkingThreshHold)
+        if (Vector3.Distance(_hen.position, randomPosition) > _henStats.npcDistanceWalkingThreshHold)
         {
             targetPosition = randomPosition;
             CalculateSpeed();

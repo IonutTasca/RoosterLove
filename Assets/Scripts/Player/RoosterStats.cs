@@ -2,13 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public sealed class RoosterStats : AliveObjectStats
+public sealed class RoosterStats : AliveObjectStatsBase
 {
-    [SerializeField] private float _flySpeedSlow = 100;
-    [SerializeField] private float _flySpeedFast = 200f;
-    [SerializeField] private float _flyYPower = 250f;
+    public override float runSpeed => 3f;
 
-    public float FlySpeedSlow => _flySpeedSlow;
-    public float FlySpeedFast => _flySpeedFast;
-    public float FlyYPower => _flyYPower;
+    public override float walkSpeed => 1f;
+
+    public override float turnSmoothTime => 0.05f;
+
+    public float flySpeedSlow => 3f;
+
+    public float flySpeedFast => 6f;
+
+    public float flyYPower => 5f;
+
+
 }
