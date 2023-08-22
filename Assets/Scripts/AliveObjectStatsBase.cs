@@ -4,7 +4,12 @@ using UnityEngine;
 
 public abstract class AliveObjectStatsBase: MonoBehaviour
 {
-    public abstract float runSpeed { get; }
-    public abstract float walkSpeed { get; }
-    public abstract float turnSmoothTime { get; }
+    [SerializeField] private float _runSpeed;
+    [SerializeField] private float _walkSpeed;
+    [SerializeField] private float _turnSmoothTime;
+
+
+    public float RunSpeed => _runSpeed;
+    public float WalkSpeed => _walkSpeed;
+    public float TurnSmoothTime => _turnSmoothTime;
 }

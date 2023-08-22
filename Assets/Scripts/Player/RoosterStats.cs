@@ -4,17 +4,12 @@ using UnityEngine;
 
 public sealed class RoosterStats : AliveObjectStatsBase
 {
-    public override float runSpeed => 3f;
+    [SerializeField] private float _flySpeedSlow;
+    [SerializeField] private float _flySpeedFast;
+    [SerializeField] private float _flyYPower;
 
-    public override float walkSpeed => 1f;
-
-    public override float turnSmoothTime => 0.05f;
-
-    public float flySpeedSlow => 3f;
-
-    public float flySpeedFast => 6f;
-
-    public float flyYPower => 5f;
-
+    public float FlySpeedSlow => _flySpeedSlow;
+    public float FlySpeedFast => _flySpeedFast;
+    public float FlyYPower => _flyYPower;
 
 }

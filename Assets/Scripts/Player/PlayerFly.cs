@@ -51,7 +51,7 @@ public class PlayerFly : MonoBehaviour, IPlayerAction
         }
 
         // Calculate the desired position increment based on the movement direction and speed
-        Vector3 positionIncrement = movementDirection * _roosterStats.flyYPower * Time.fixedDeltaTime;
+        Vector3 positionIncrement = movementDirection * _roosterStats.FlyYPower * Time.fixedDeltaTime;
 
         // Update the Rooster's position
         transform.Translate(positionIncrement, Space.World);

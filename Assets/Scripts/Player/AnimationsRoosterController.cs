@@ -9,9 +9,9 @@ public sealed class AnimationsRoosterController : AnimationsControllerBase
     {
         base.Fly(value);
 
-        _animator.SetBool("isFlying", value);
+        animator.SetBool("isFlying", value);
         if (value)
-            _status.UpdateStatus(Status.Flying);
+            status.UpdateStatus(Status.Flying);
     }
 
 

@@ -4,26 +4,38 @@ using UnityEngine;
 
 public class AnimationsControllerBase : MonoBehaviour
 {
-    protected Animator _animator;
-    protected ObjectStatusBase _status;
+    protected Animator animator;
+    protected ObjectStatusBase status;
+
+    protected readonly float loveTime = 0.6f;
 
     void Awake()
     {
-        _animator = GetComponentInChildren<Animator>();
-        _status = GetComponent<ObjectStatusBase>(); 
+        animator = GetComponentInChildren<Animator>();
+        status = GetComponent<ObjectStatusBase>(); 
     }
 
     private void Move(bool value)
     {
-        _animator.SetBool("moving", value);
-        _status.UpdateStatus(Status.Moving);
+        animator.SetBool("moving", value);
+        status.UpdateStatus(Status.Moving);
     }
 
-
-
+    public void MakeLove()
+    {
+        animator.SetTrigger("love");
+        status.UpdateStatus(Status.Loving);
+        Invoke(nameof(StopLove),loveTime);    
+    }
+  
+    private void StopLove()
+    {
+        animator.ResetTrigger("love");
+        Idle();
+    }
     public virtual void UpdateSpeed(float value)
     {
-        _animator.SetFloat("speed", value);
+        animator.SetFloat("speed", value);
 
         if (value <= 0.1f)
             Idle();
@@ -34,7 +46,7 @@ public class AnimationsControllerBase : MonoBehaviour
     public virtual void Idle()
     {
         Move(false);
-        _status.UpdateStatus(Status.Idle);
+        status.UpdateStatus(Status.Idle);
 
     }
     public virtual void Fly(bool value)

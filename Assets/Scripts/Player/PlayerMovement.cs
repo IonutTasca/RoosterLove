@@ -47,7 +47,7 @@ public class PlayerMovement : MonoBehaviour
         {
             float targetAngle = Mathf.Atan2(_movementDirection.x, _movementDirection.z) * Mathf.Rad2Deg + _camera.eulerAngles.y;
 
-            float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref _turnSmoothVelocity, _roosterStats.turnSmoothTime);
+            float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref _turnSmoothVelocity, _roosterStats.TurnSmoothTime);
             transform.rotation = Quaternion.Euler(0f, smoothAngle, 0f);
 
             // Calculate the rotated 2D movement direction
@@ -66,14 +66,14 @@ public class PlayerMovement : MonoBehaviour
         if (_playerStatus.GetStatus() == Status.Flying)
         {
             if(_movementMagnitude>0.9f)
-                return _roosterStats.flySpeedFast;
+                return _roosterStats.FlySpeedFast;
             else
-                return _roosterStats.flySpeedSlow;
+                return _roosterStats.FlySpeedSlow;
         }
         if (_movementMagnitude > 0.9f)
-            return _roosterStats.runSpeed;
+            return _roosterStats.RunSpeed;
         else
-            return _roosterStats.walkSpeed;
+            return _roosterStats.WalkSpeed;
         
     }
     public float HorizontalInput() => _joystick.Horizontal;

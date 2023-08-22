@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 2
   tags:
   - Hen
+  - LoveButton
+  - FlyButton
+  - HenNpcRange
+  - HenLoveRange
   layers:
   - Default
   - TransparentFX

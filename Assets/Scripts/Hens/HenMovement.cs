@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class HenMovement : MonoBehaviour
 {
-    [SerializeField] private Collider _henPlaceCollider;
+    private Collider _henPlaceCollider;
+    private const string HenNpcRangeTag = "HenNpcRange";
 
    
     private Vector3 targetPosition;
@@ -23,6 +24,7 @@ public class HenMovement : MonoBehaviour
         _henStatus = GetComponent<HenStatus>();
         _henStats = GetComponentInChildren<HenStats>();
         _hen = transform.GetChild(0);
+        _henPlaceCollider = GameObject.FindGameObjectWithTag(HenNpcRangeTag).GetComponent<Collider>();
 
         StartCoroutine(StartMovingAfterDelay());
     }
@@ -38,14 +40,13 @@ public class HenMovement : MonoBehaviour
     }
     private void CalculateSpeed()
     {
-        _speed = Random.Range(_henStats.walkSpeed, _henStats.runSpeed);
+        _speed = Random.Range(_henStats.WalkSpeed, _henStats.RunSpeed);
     }
     private void Move()
     {
         
         Vector3 newPosition = Vector3.MoveTowards(_hen.position, targetPosition, _speed * Time.fixedDeltaTime);
         _hen.position = newPosition;
-        Debug.Log(_speed);
         
         if (Vector3.Distance(_hen.position, targetPosition) < 0.1f)
         {
@@ -68,7 +69,7 @@ public class HenMovement : MonoBehaviour
         if (directionToTarget != Vector3.zero)
         {
             targetRotation = Quaternion.LookRotation(directionToTarget.normalized, Vector3.up);
-            _hen.rotation = Quaternion.Slerp(_hen.rotation, targetRotation, Time.deltaTime * _henStats.turnSmoothTime);
+            _hen.rotation = Quaternion.Slerp(_hen.rotation, targetRotation, Time.deltaTime * _henStats.TurnSmoothTime);
         }
     }
     private IEnumerator StartMovingAfterDelay()
