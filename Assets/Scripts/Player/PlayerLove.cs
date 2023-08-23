@@ -11,35 +11,49 @@ public sealed class PlayerLove : MonoBehaviour,IPlayerAction
     private const string HenLoveRangeTag = "HenLoveRange";
 
     private AnimationsControllerBase _roosterAnimator;
-
+    private Transform _activeLoveTransform;
 
     private void Start()
     {
         _loveButton = GameObject.FindGameObjectWithTag(LoveButtonTag).GetComponent<Button>();
         _roosterAnimator = GetComponent<AnimationsControllerBase>();
         _loveButton.onClick.AddListener(StartAction);
+        _roosterAnimator.OnLoveEnded += StopAction;
     }
     private void OnDestroy()
     {
         _loveButton.onClick.RemoveAllListeners();
+        _roosterAnimator.OnLoveEnded -= StopAction;
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.transform.tag != HenLoveRangeTag) return;
-        _hen = other.transform.parent.parent;
+        _hen = other.transform.parent;
+        _activeLoveTransform = other.transform.GetChild(0).transform;
         ToggleUISelectable(_loveButton, true);
     }
     private void OnTriggerExit(Collider other)
     {
         if (other.transform.tag != HenLoveRangeTag) return;
         _hen = null;
+        _activeLoveTransform = null;
         ToggleUISelectable(_loveButton, false);
     }
 
     private void MakeLove()
     {
-        transform.position = _hen.transform.position+ new Vector3(0,0.5f,0);
+        transform.position = _activeLoveTransform.position;
+
+        // Calculate the direction from ObjectToRotate to TargetObject (only consider Y axis)
+        Vector3 directionToTarget = _hen.transform.position - transform.position;
+        directionToTarget.y = 0; // Set Y component to 0 to only consider rotation around Y axis
+
+        // Calculate the rotation to look at the target object
+        Quaternion rotation = Quaternion.LookRotation(directionToTarget);
+
+        // Apply the calculated rotation to ObjectToRotate, only modifying the Y axis rotation
+        transform.rotation = Quaternion.Euler(0, rotation.eulerAngles.y, 0);
 
         PlayLoveAnimations();
 
@@ -48,7 +62,7 @@ public sealed class PlayerLove : MonoBehaviour,IPlayerAction
     private void PlayLoveAnimations()
     {
         _roosterAnimator.MakeLove();
-        var henAnimator = _hen.GetComponent<AnimationsControllerBase>();
+        var henAnimator = _hen.parent.GetComponent<AnimationsControllerBase>();
         henAnimator.MakeLove();
     }
     public void StartAction()
@@ -63,7 +77,7 @@ public sealed class PlayerLove : MonoBehaviour,IPlayerAction
 
     public void StopAction()
     {
-       
+
     }
 
     public void ToggleUISelectable(Selectable selectableUi, bool value)

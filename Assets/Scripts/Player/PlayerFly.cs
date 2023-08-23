@@ -15,9 +15,6 @@ public class PlayerFly : MonoBehaviour, IPlayerAction
 
     private PlayerStatus _playerStatus;
 
-    private Vector3 _flyYDirection;
-    private float _rotationMappedValue;
-
     private const float _minRotation = -85;
     private const float _maxRotation = 85;
 
@@ -39,7 +36,7 @@ public class PlayerFly : MonoBehaviour, IPlayerAction
     private void FixedUpdate()
     {
         if (!(_playerStatus.GetStatus() == Status.Flying)) return;
-
+        if (_playerStatus.GetStatus() == Status.Loving) return;
         // Calculate the movement direction based on the joystick input
         Vector3 movementDirection = new Vector3(_flyJoystick.Horizontal, _flyJoystick.Vertical, 0f);
 
@@ -66,7 +63,6 @@ public class PlayerFly : MonoBehaviour, IPlayerAction
     
     public void StartAction()
     {
-        //_rb.AddForce(0, 5, 0, ForceMode.VelocityChange);
         _animationsController.Fly(true);
         ToggleUISelectable(_button, false);
     }

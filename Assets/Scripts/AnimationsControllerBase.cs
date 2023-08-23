@@ -1,14 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class AnimationsControllerBase : MonoBehaviour
 {
     protected Animator animator;
     protected ObjectStatusBase status;
 
-    protected readonly float loveTime = 0.6f;
+    protected readonly float loveTime = 1f;
 
+    public event UnityAction OnLoveEnded;
     void Awake()
     {
         animator = GetComponentInChildren<Animator>();
@@ -32,6 +34,7 @@ public class AnimationsControllerBase : MonoBehaviour
     {
         animator.ResetTrigger("love");
         Idle();
+        OnLoveEnded?.Invoke();
     }
     public virtual void UpdateSpeed(float value)
     {

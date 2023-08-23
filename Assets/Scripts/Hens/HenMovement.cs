@@ -32,7 +32,7 @@ public class HenMovement : MonoBehaviour
    
     private void FixedUpdate()
     {
-        if (isMoving)
+        if (isMoving && _henStatus.GetStatus() != Status.Loving)
         {
             Move();
             RotateTowardsTarget();
@@ -44,7 +44,8 @@ public class HenMovement : MonoBehaviour
     }
     private void Move()
     {
-        
+        if (_henStatus.GetStatus() == Status.Loving)
+            return;
         Vector3 newPosition = Vector3.MoveTowards(_hen.position, targetPosition, _speed * Time.fixedDeltaTime);
         _hen.position = newPosition;
         

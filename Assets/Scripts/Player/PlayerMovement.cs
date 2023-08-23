@@ -26,7 +26,9 @@ public class PlayerMovement : MonoBehaviour
     {
         _movementDirection.Set(_joystick.Horizontal, 0, _joystick.Vertical);
         _movementMagnitude = _movementDirection.sqrMagnitude;
-        //Debug.Log("movement: " + _movementDirection);
+
+        if (_playerStatus.GetStatus() == Status.Loving)
+            return;
         MoveAndRotatePlayer();
     }
 
