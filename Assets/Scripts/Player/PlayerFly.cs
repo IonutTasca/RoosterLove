@@ -36,7 +36,7 @@ public class PlayerFly : MonoBehaviour, IPlayerAction
     private void FixedUpdate()
     {
         if (!(_playerStatus.GetStatus() == Status.Flying)) return;
-        if (_playerStatus.GetStatus() == Status.Loving) return;
+        //if (_playerStatus.GetStatus() == Status.Loving) return;
         // Calculate the movement direction based on the joystick input
         Vector3 movementDirection = new Vector3(_flyJoystick.Horizontal, _flyJoystick.Vertical, 0f);
 
