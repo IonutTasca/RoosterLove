@@ -11,4 +11,5 @@ public sealed class AnimationsHenController : AnimationsControllerBase
         int randomIndex = Random.Range(0, _idleAnimationsLength);
         animator.SetInteger("idleIndex", randomIndex);
     }
+ 
 }

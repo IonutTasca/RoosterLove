@@ -5,6 +5,7 @@ using UnityEngine;
 
 public sealed class AnimationsRoosterController : AnimationsControllerBase
 {
+    public readonly float toFlyTime = 0.542f;
     public override void Fly(bool value)
     {
         base.Fly(value);
@@ -12,6 +13,8 @@ public sealed class AnimationsRoosterController : AnimationsControllerBase
         animator.SetBool("isFlying", value);
         if (value)
             status.UpdateStatus(Status.Flying);
+        else
+            Idle();
     }
 
 

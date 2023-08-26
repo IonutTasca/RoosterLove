@@ -8,6 +8,7 @@ public abstract class AliveObjectStatsBase: MonoBehaviour
     [SerializeField] private float _walkSpeed;
     [SerializeField] private float _turnSmoothTime;
 
+    public float CurrentSpeed { get; set; }
 
     public float RunSpeed => _runSpeed;
     public float WalkSpeed => _walkSpeed;

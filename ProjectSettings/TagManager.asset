@@ -9,6 +9,7 @@ TagManager:
   - FlyButton
   - HenNpcRange
   - HenLoveRange
+  - Ground
   layers:
   - Default
   - TransparentFX

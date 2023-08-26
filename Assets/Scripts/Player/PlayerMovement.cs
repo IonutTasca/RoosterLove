@@ -45,6 +45,8 @@ public class PlayerMovement : MonoBehaviour
         if (_playerStatus.GetStatus()!=Status.Flying)
             _animationController.UpdateSpeed(_movementMagnitude);
 
+        _roosterStats.CurrentSpeed = _movementMagnitude;    
+
         if (_movementMagnitude >= 0.1f)
         {
             float targetAngle = Mathf.Atan2(_movementDirection.x, _movementDirection.z) * Mathf.Rad2Deg + _camera.eulerAngles.y;

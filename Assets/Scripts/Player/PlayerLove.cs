@@ -12,11 +12,12 @@ public sealed class PlayerLove : MonoBehaviour,IPlayerAction
 
     private AnimationsControllerBase _roosterAnimator;
     private Transform _activeLoveTransform;
-
+    private PlayerStatus _playerStatus;
     private void Start()
     {
         _loveButton = GameObject.FindGameObjectWithTag(LoveButtonTag).GetComponent<Button>();
         _roosterAnimator = GetComponent<AnimationsControllerBase>();
+        _playerStatus = GetComponent<PlayerStatus>();   
         _loveButton.onClick.AddListener(StartAction);
         _roosterAnimator.OnLoveEnded += StopAction;
     }
@@ -28,6 +29,12 @@ public sealed class PlayerLove : MonoBehaviour,IPlayerAction
 
     private void OnTriggerEnter(Collider other)
     {
+        if (_playerStatus.GetStatus() == Status.Flying)
+        {
+            StopAction();
+            return;
+        }
+
         if (other.transform.tag != HenLoveRangeTag) return;
         _hen = other.transform.parent;
         _activeLoveTransform = other.transform.GetChild(0).transform;
@@ -35,10 +42,9 @@ public sealed class PlayerLove : MonoBehaviour,IPlayerAction
     }
     private void OnTriggerExit(Collider other)
     {
+        if (_playerStatus.GetStatus() == Status.Flying) return;
         if (other.transform.tag != HenLoveRangeTag) return;
-        _hen = null;
-        _activeLoveTransform = null;
-        ToggleUISelectable(_loveButton, false);
+        StopAction();
     }
 
     private void MakeLove()
@@ -77,7 +83,9 @@ public sealed class PlayerLove : MonoBehaviour,IPlayerAction
 
     public void StopAction()
     {
-
+        _hen = null;
+        _activeLoveTransform = null;
+        ToggleUISelectable(_loveButton, false);
     }
 
     public void ToggleUISelectable(Selectable selectableUi, bool value)

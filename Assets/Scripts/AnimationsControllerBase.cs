@@ -8,7 +8,7 @@ public class AnimationsControllerBase : MonoBehaviour
     protected Animator animator;
     protected ObjectStatusBase status;
 
-    protected readonly float loveTime = 1f;
+    protected readonly float loveTime = 2f;
 
     public event UnityAction OnLoveEnded;
     void Awake()
@@ -30,7 +30,7 @@ public class AnimationsControllerBase : MonoBehaviour
         Invoke(nameof(StopLove),loveTime);    
     }
   
-    private void StopLove()
+    protected void StopLove()
     {
         animator.ResetTrigger("love");
         Idle();
