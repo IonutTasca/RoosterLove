@@ -20,19 +20,30 @@ public class CameraFreeMoveHandler : MonoBehaviour
     {
         if (Input.touchCount == 0)
             return 0f;
-        
+
         foreach(RectTransform rectTransform in ignoreRectsArea)
             if (!RectTransformUtility.RectangleContainsScreenPoint(rectTransform, (Input.GetTouch(0).position)))
                 return 0f;
 
+        int cameraTouchId = 0;
+        foreach(RectTransform rectTransform in ignoreRectsArea)
+        {
+            for (int i = 0; i < Input.touchCount; i++)
+            {
+                if (!RectTransformUtility.RectangleContainsScreenPoint(rectTransform, (Input.GetTouch(0).position)))
+                    continue;
+                cameraTouchId = i;
+            }
+        }
+        
+
         switch (axisName)
         {
-
             case "Mouse X":
 
                 if (Input.touchCount > 0)
                 {
-                    return Input.touches[0].deltaPosition.x / touchSensitivity_x;
+                    return Input.touches[cameraTouchId].deltaPosition.x / touchSensitivity_x;
                 }
                 else
                 {
@@ -42,7 +53,7 @@ public class CameraFreeMoveHandler : MonoBehaviour
             case "Mouse Y":
                 if (Input.touchCount > 0)
                 {
-                    return Input.touches[0].deltaPosition.y / touchSensitivity_y;
+                    return Input.touches[cameraTouchId].deltaPosition.y / touchSensitivity_y;
                 }
                 else
                 {
