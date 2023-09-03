@@ -10,8 +10,9 @@ public class PlayerInfo : AliveObjectInfoBase
 
     private PlayerLove _playerLove;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         BodyCount = new BodyCount();
         Coins = new Coins();
     }

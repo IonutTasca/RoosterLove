@@ -7,11 +7,15 @@ public class AliveObjectInfoBase : MonoBehaviour
     public Level Level { get; private set; }
     protected ObjectStatusBase _status;
 
+    protected virtual void Awake()
+    {
+        Level = new Level();
+    }
     protected virtual void Start()
     {
         _status = GetComponent<ObjectStatusBase>();
         _status.OnStatusChange += OnStatusChange;
-        Level = new Level();
+        
 
         InitializeInfos();
     }
