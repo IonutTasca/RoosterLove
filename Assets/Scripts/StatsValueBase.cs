@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class StatsValueBase
 {
@@ -8,6 +9,7 @@ public class StatsValueBase
 
     private int _value;
 
+    public UnityAction<int> OnValueChanged;
     public int Value => _value;
 
     public void InitializeValue()
@@ -17,7 +19,8 @@ public class StatsValueBase
     public void IncreaseValue(int byValue)
     {
         _value += byValue;
-        Debug.Log(Name+ ": " + _value); 
+        Debug.Log(Name+ ": " + _value);
+        OnValueChanged?.Invoke(_value);
     }
 
     public void DecreaseValue(int byValue)
@@ -27,5 +30,6 @@ public class StatsValueBase
         else
             _value = 0;
         Debug.Log(Name + ": " + _value);
+        OnValueChanged?.Invoke(_value);
     }
 }

@@ -24,12 +24,26 @@ public class HenMovement : MonoBehaviour
         _henStatus = GetComponent<HenStatus>();
         _henStats = GetComponentInChildren<HenStats>();
         _hen = transform.GetChild(0);
-        _henPlaceCollider = GameObject.FindGameObjectWithTag(HenNpcRangeTag).GetComponent<Collider>();
+        _henPlaceCollider = FindObjectWithTag(transform, HenNpcRangeTag).GetComponent<Collider>();// GameObject.FindGameObjectWithTag(HenNpcRangeTag).GetComponent<Collider>();
 
         StartCoroutine(StartMovingAfterDelay());
     }
-  
-   
+
+    private GameObject FindObjectWithTag(Transform parent, string tag)
+    {
+       GameObject gameObject = null;
+
+        for (int i = 0; i < parent.childCount; i++)
+        {
+            Transform child = parent.GetChild(i);
+            if (child.tag == tag)
+            {
+                gameObject = child.gameObject; break;
+            }
+            
+        }
+        return gameObject;
+    }
     private void FixedUpdate()
     {
         if (isMoving && _henStatus.GetStatus() != Status.Loving)

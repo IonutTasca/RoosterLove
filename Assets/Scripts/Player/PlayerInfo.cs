@@ -14,9 +14,9 @@ public class PlayerInfo : AliveObjectInfoBase
 
     protected override void Start()
     {
-        base.Start();
         BodyCount = new BodyCount();
         Coins = new Coins();
+        base.Start();
         _playerLove = GetComponent<PlayerLove>();
 
     }

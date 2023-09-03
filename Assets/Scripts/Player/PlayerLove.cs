@@ -42,7 +42,7 @@ public sealed class PlayerLove : MonoBehaviour,IPlayerAction
 
         if (other.transform.tag != HenLoveRangeTag) return;
         _hen = other.transform.parent;
-        _henInfo = _hen.GetComponent<HenInfo>();
+        _henInfo = _hen.transform.parent.GetComponent<HenInfo>();
         if (!CanLoveHen())
         {
             StopAction();

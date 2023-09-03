@@ -17,8 +17,8 @@ public class PlayerFly : MonoBehaviour, IPlayerAction
 
     private PlayerStatus _playerStatus;
 
-    private const float _minRotation = -85;
-    private const float _maxRotation = 85;
+    private const float _minRotation = -65;
+    private const float _maxRotation = 65;
 
     private bool _isRunningForFly = false;
 
