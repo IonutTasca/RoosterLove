@@ -40,7 +40,8 @@ public class PlayerFly : MonoBehaviour, IPlayerAction
     }
     private void OnDestroy()
     {
-        _button.onClick.RemoveAllListeners();
+        if(_button)
+            _button.onClick.RemoveAllListeners();
         
     }
     private void OnCollisionEnter(Collision collision)
@@ -122,12 +123,13 @@ public class PlayerFly : MonoBehaviour, IPlayerAction
     {
         yield return new WaitForSeconds(_animationsController.toFlyTime);
         _isRunningForFly = false;
+        yield return new WaitForSeconds(_animationsController.toFlyTime);
+        
     }
     public void StartAction()
     {
         _isRunningForFly = true;
         _animationsController.Fly(true);
-        _flyJoystick.HandleRange = 1;
         
         StartCoroutine(AfterRunningStartFlying());
         ToggleUISelectable(_button, false);
@@ -138,7 +140,6 @@ public class PlayerFly : MonoBehaviour, IPlayerAction
         _movementDirection = Vector3.zero;
         _rooster.localRotation = Quaternion.Euler(0, 0f, 0f);
         _animationsController.Fly(false);
-        _flyJoystick.HandleRange = 0;
         ToggleUISelectable(_button, true);
     }
 

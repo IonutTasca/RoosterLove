@@ -17,6 +17,9 @@ public sealed class PlayerLove : MonoBehaviour,IPlayerAction
     private HenInfo _henInfo;
 
     private int _lastHenCoinsValue = 0;
+
+    private float _cooldown = 2f;
+    private bool _canLove = true;
     private void Start()
     {
         _loveButton = GameObject.FindGameObjectWithTag(LoveButtonTag).GetComponent<Button>();
@@ -28,8 +31,11 @@ public sealed class PlayerLove : MonoBehaviour,IPlayerAction
     }
     private void OnDestroy()
     {
-        _loveButton.onClick.RemoveAllListeners();
-        _roosterAnimator.OnLoveEnded -= StopAction;
+        if(_loveButton)
+            _loveButton.onClick.RemoveAllListeners();
+        if(_roosterAnimator)
+            _roosterAnimator.OnLoveEnded -= StopAction;
+        StopAllCoroutines();
     }
     public int LastHenCoinsValue => _lastHenCoinsValue;
     private void OnTriggerEnter(Collider other)
@@ -89,6 +95,11 @@ public sealed class PlayerLove : MonoBehaviour,IPlayerAction
         var henAnimator = _hen.parent.GetComponent<AnimationsControllerBase>();
         henAnimator.MakeLove();
     }
+    private IEnumerator CooldownReset()
+    {
+        yield return new WaitForSeconds(_cooldown);
+        _canLove = true;
+    }
     public void StartAction()
     {
         if(_hen == null)
@@ -96,7 +107,17 @@ public sealed class PlayerLove : MonoBehaviour,IPlayerAction
             ToggleUISelectable(_loveButton, false);
             return;
         }
-        MakeLove();
+        if (_canLove)
+        {
+            _canLove = false;
+            StartCoroutine(CooldownReset());
+            MakeLove();
+        }
+        else
+        {
+            ToggleUISelectable(_loveButton, false);
+        }
+           
     }
 
     public void StopAction()

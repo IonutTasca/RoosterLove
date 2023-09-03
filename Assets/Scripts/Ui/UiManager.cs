@@ -37,9 +37,12 @@ public sealed class UiManager : MonoBehaviour
     {
         if (_playerInfo)
         {
-            _playerInfo.BodyCount.OnValueChanged -= BodyCountOnValueChanged;
-            _playerInfo.Coins.OnValueChanged -= CoinsOnValueChanged;
-            _playerInfo.Level.OnValueChanged -= LevelOnValueChanged;
+            if(_playerInfo.BodyCount != null)
+                _playerInfo.BodyCount.OnValueChanged -= BodyCountOnValueChanged;
+            if (_playerInfo.Coins != null)
+                _playerInfo.Coins.OnValueChanged -= CoinsOnValueChanged;
+            if (_playerInfo.Level != null)
+                _playerInfo.Level.OnValueChanged -= LevelOnValueChanged;
         }
     }
     private void BodyCountOnValueChanged(int newValue)
