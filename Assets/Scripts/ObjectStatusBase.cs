@@ -11,7 +11,7 @@ public enum Status
 
 public class ObjectStatusBase : MonoBehaviour
 {
-    public event UnityAction OnStatusChange;
+    public event UnityAction<Status> OnStatusChange;
 
     private Status _status;
 
@@ -25,7 +25,7 @@ public class ObjectStatusBase : MonoBehaviour
             return;
 
         _status = status;
-        OnStatusChange?.Invoke();
+        OnStatusChange?.Invoke(status);
     }
     public Status GetStatus() => _status;
 }

@@ -13,11 +13,16 @@ public sealed class PlayerLove : MonoBehaviour,IPlayerAction
     private AnimationsControllerBase _roosterAnimator;
     private Transform _activeLoveTransform;
     private PlayerStatus _playerStatus;
+    private PlayerInfo _playerInfo;
+    private HenInfo _henInfo;
+
+    private int _lastHenCoinsValue = 0;
     private void Start()
     {
         _loveButton = GameObject.FindGameObjectWithTag(LoveButtonTag).GetComponent<Button>();
         _roosterAnimator = GetComponent<AnimationsControllerBase>();
         _playerStatus = GetComponent<PlayerStatus>();   
+        _playerInfo = GetComponent<PlayerInfo>();   
         _loveButton.onClick.AddListener(StartAction);
         _roosterAnimator.OnLoveEnded += StopAction;
     }
@@ -26,7 +31,7 @@ public sealed class PlayerLove : MonoBehaviour,IPlayerAction
         _loveButton.onClick.RemoveAllListeners();
         _roosterAnimator.OnLoveEnded -= StopAction;
     }
-
+    public int LastHenCoinsValue => _lastHenCoinsValue;
     private void OnTriggerEnter(Collider other)
     {
         if (_playerStatus.GetStatus() == Status.Flying)
@@ -37,6 +42,12 @@ public sealed class PlayerLove : MonoBehaviour,IPlayerAction
 
         if (other.transform.tag != HenLoveRangeTag) return;
         _hen = other.transform.parent;
+        _henInfo = _hen.GetComponent<HenInfo>();
+        if (!CanLoveHen())
+        {
+            StopAction();
+            return;
+        }
         _activeLoveTransform = other.transform.GetChild(0).transform;
         ToggleUISelectable(_loveButton, true);
     }
@@ -45,6 +56,11 @@ public sealed class PlayerLove : MonoBehaviour,IPlayerAction
         if (_playerStatus.GetStatus() == Status.Flying) return;
         if (other.transform.tag != HenLoveRangeTag) return;
         StopAction();
+    }
+
+    private bool CanLoveHen()
+    {
+        return _playerInfo.Level.Value <= _henInfo.Level.Value;
     }
 
     private void MakeLove()
@@ -60,6 +76,8 @@ public sealed class PlayerLove : MonoBehaviour,IPlayerAction
 
         // Apply the calculated rotation to ObjectToRotate, only modifying the Y axis rotation
         transform.rotation = Quaternion.Euler(0, rotation.eulerAngles.y, 0);
+
+        _lastHenCoinsValue = _henInfo.CoinsValue;
 
         PlayLoveAnimations();
 
@@ -84,6 +102,7 @@ public sealed class PlayerLove : MonoBehaviour,IPlayerAction
     public void StopAction()
     {
         _hen = null;
+        _lastHenCoinsValue = 0;
         _activeLoveTransform = null;
         ToggleUISelectable(_loveButton, false);
     }
