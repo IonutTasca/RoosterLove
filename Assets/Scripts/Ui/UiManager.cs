@@ -28,6 +28,7 @@ public sealed class UiManager : MonoBehaviour
 
     private void Start()
     {
+        Debug.Log("on start player info: "+_playerInfo);
         _playerInfo.BodyCount.OnValueChanged += BodyCountOnValueChanged;
         _playerInfo.Coins.OnValueChanged += CoinsOnValueChanged;
         _playerInfo.Level.OnValueChanged += LevelOnValueChanged;

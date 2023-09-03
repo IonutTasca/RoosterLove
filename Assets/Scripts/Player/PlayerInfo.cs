@@ -10,12 +10,15 @@ public class PlayerInfo : AliveObjectInfoBase
 
     private PlayerLove _playerLove;
 
+    private void Awake()
+    {
+        BodyCount = new BodyCount();
+        Coins = new Coins();
+    }
 
 
     protected override void Start()
     {
-        BodyCount = new BodyCount();
-        Coins = new Coins();
         base.Start();
         _playerLove = GetComponent<PlayerLove>();
 

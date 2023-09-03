@@ -834,7 +834,7 @@ PlayerSettings:
   il2cppCodeGeneration:
     Android: 1
   managedStrippingLevel:
-    Android: 1
+    Android: 4
     EmbeddedLinux: 1
     GameCoreScarlett: 1
     GameCoreXboxOne: 1
