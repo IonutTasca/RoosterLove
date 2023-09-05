@@ -24,6 +24,7 @@ public class ObjectStatusBase : MonoBehaviour
         if (_status == status)
             return;
 
+        Debug.Log("New status:" + status+" on "+transform);
         _status = status;
         OnStatusChange?.Invoke(status);
     }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public sealed class AnimationsRoosterController : AnimationsControllerBase
 {
-    public readonly float toFlyTime = 1f;
+    public readonly float toFlyTime = 0.6f;
     public override void Fly(bool value)
     {
         base.Fly(value);

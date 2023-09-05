@@ -20,7 +20,8 @@ public class AnimationsControllerBase : MonoBehaviour
     private void Move(bool value)
     {
         animator.SetBool("moving", value);
-        status.UpdateStatus(Status.Moving);
+        if(value)
+            status.UpdateStatus(Status.Moving);
     }
 
     public void MakeLove()

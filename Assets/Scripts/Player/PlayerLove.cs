@@ -38,15 +38,32 @@ public sealed class PlayerLove : MonoBehaviour,IPlayerAction
         StopAllCoroutines();
     }
     public int LastHenCoinsValue => _lastHenCoinsValue;
+    private void OnTriggerStay(Collider other)
+    {
+        SetTargetFromCollider(other);
+    }
     private void OnTriggerEnter(Collider other)
     {
-        if (_playerStatus.GetStatus() == Status.Flying)
-        {
-            StopAction();
-            return;
-        }
+        SetTargetFromCollider(other);
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        //if (_playerStatus.GetStatus() == Status.Flying) return;
+        if (!_canLove) return;
+        if (other.transform.tag != HenLoveRangeTag) return;
+        StopAction();
+    }
+    private void SetTargetFromCollider(Collider other)
+    {
+        //if (_playerStatus.GetStatus() == Status.Flying)
+        //{
+        //    StopAction();
+        //    return;
+        //}
+        if (!_canLove) return;
 
         if (other.transform.tag != HenLoveRangeTag) return;
+
         _hen = other.transform.parent;
         _henInfo = _hen.transform.parent.GetComponent<HenInfo>();
         if (!CanLoveHen())
@@ -57,13 +74,6 @@ public sealed class PlayerLove : MonoBehaviour,IPlayerAction
         _activeLoveTransform = other.transform.GetChild(0).transform;
         ToggleUISelectable(_loveButton, true);
     }
-    private void OnTriggerExit(Collider other)
-    {
-        if (_playerStatus.GetStatus() == Status.Flying) return;
-        if (other.transform.tag != HenLoveRangeTag) return;
-        StopAction();
-    }
-
     private bool CanLoveHen()
     {
         return _playerInfo.Level.Value <= _henInfo.Level.Value;
@@ -97,8 +107,11 @@ public sealed class PlayerLove : MonoBehaviour,IPlayerAction
     }
     private IEnumerator CooldownReset()
     {
+        Debug.Log("can love false");
         yield return new WaitForSeconds(_cooldown);
+        Debug.Log("can love true");
         _canLove = true;
+        ToggleUISelectable(_loveButton, true);
     }
     public void StartAction()
     {
@@ -110,6 +123,7 @@ public sealed class PlayerLove : MonoBehaviour,IPlayerAction
         if (_canLove)
         {
             _canLove = false;
+            ToggleUISelectable(_loveButton, false);
             StartCoroutine(CooldownReset());
             MakeLove();
         }

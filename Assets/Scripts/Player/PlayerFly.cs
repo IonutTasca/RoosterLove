@@ -36,13 +36,19 @@ public class PlayerFly : MonoBehaviour, IPlayerAction
         _rigidBody = GetComponent<Rigidbody>();
         _playerStatus = GetComponent<PlayerStatus>(); 
         _button.onClick.AddListener(StartAction);
+        _playerStatus.OnStatusChange += UpdateFlyAction;
         
     }
+
+   
+
     private void OnDestroy()
     {
         if(_button)
             _button.onClick.RemoveAllListeners();
-        
+        if(_playerStatus)
+            _playerStatus.OnStatusChange -= UpdateFlyAction;
+
     }
     private void OnCollisionEnter(Collision collision)
     {
@@ -58,7 +64,7 @@ public class PlayerFly : MonoBehaviour, IPlayerAction
     
     private void FixedUpdate()
     {
-        UpdateFlyAction();
+        //UpdateFlyAction();
 
         if (!(_playerStatus.GetStatus() == Status.Flying))
         {
@@ -90,9 +96,8 @@ public class PlayerFly : MonoBehaviour, IPlayerAction
         // Apply the rotation to the Rooster
         _rooster.localRotation = Quaternion.Euler(-rotationAngle, 0f, 0f);
     }
-
-    
-    private void UpdateFlyAction()
+ 
+    private void UpdateFlyAction(Status status)
     {
         if(_playerStatus.GetStatus() == Status.Flying)
         {
@@ -103,7 +108,10 @@ public class PlayerFly : MonoBehaviour, IPlayerAction
         }
         else
         {
-            if(!_rigidBody.useGravity)
+            if(status == Status.Loving)
+                _button.interactable = false;
+
+            if (!_rigidBody.useGravity)
                 _rigidBody.useGravity = true;
 
             if (_roosterStats.CurrentSpeed > 0)
@@ -122,13 +130,14 @@ public class PlayerFly : MonoBehaviour, IPlayerAction
     private IEnumerator AfterRunningStartFlying()
     {
         yield return new WaitForSeconds(_animationsController.toFlyTime);
-        _isRunningForFly = false;
+        _isRunningForFly = true;
         yield return new WaitForSeconds(_animationsController.toFlyTime);
-        
+        _isRunningForFly = false;
+
     }
     public void StartAction()
     {
-        _isRunningForFly = true;
+       
         _animationsController.Fly(true);
         
         StartCoroutine(AfterRunningStartFlying());
