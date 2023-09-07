@@ -1,29 +1,27 @@
+using PlayFab;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class StatsValueBase
+public abstract class StatsValueBase
 {
     protected virtual string Name { get; }
 
-    private int _value;
+    protected int _value;
 
     public UnityAction<int> OnValueChanged;
     public int Value => _value;
 
-    public void InitializeValue()
-    {
-        //get value from server
-    }
-    public void IncreaseValue(int byValue)
+    public abstract void InitializeValue();
+    public virtual void IncreaseValue(int byValue)
     {
         _value += byValue;
         Debug.Log(Name+ ": " + _value);
         OnValueChanged?.Invoke(_value);
     }
 
-    public void DecreaseValue(int byValue)
+    public virtual void DecreaseValue(int byValue)
     {
         if (_value - byValue > 0)
             _value -= byValue;

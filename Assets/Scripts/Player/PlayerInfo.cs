@@ -8,15 +8,17 @@ public class PlayerInfo : AliveObjectInfoBase
     public BodyCount BodyCount { get; private set;}
     public Coins Coins { get; private set; }
 
+        
+
     private PlayerLove _playerLove;
 
     protected override void Awake()
     {
         base.Awake();
+
         BodyCount = new BodyCount();
         Coins = new Coins();
     }
-
 
     protected override void Start()
     {
@@ -24,9 +26,9 @@ public class PlayerInfo : AliveObjectInfoBase
         _playerLove = GetComponent<PlayerLove>();
 
     }
-
     protected override void InitializeInfos()
     {
+        base.InitializeInfos();
         BodyCount.InitializeValue();
         Coins.InitializeValue();
     }
